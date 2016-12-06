@@ -133,7 +133,7 @@ public class PreviewTextFragment extends FileFragment {
                 throw new IllegalStateException("Instanced with a NULL OCFile");
             }
             if (mAccount == null) {
-                throw new IllegalStateException("Instanced with a NULL ownCloud Account");
+                throw new IllegalStateException("Instanced with a NULL ProjectKit Drive Account");
             }
         } else {
             file = savedInstanceState.getParcelable(EXTRA_FILE);

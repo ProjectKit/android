@@ -236,7 +236,7 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
     @Override
     public void onCreate() {
         super.onCreate();
-        Log_OC.d(TAG, "Creating ownCloud media service");
+        Log_OC.d(TAG, "Creating ProjectKit Drive media service");
 
         mWifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE)).
                 createWifiLock(WifiManager.WIFI_MODE_FULL, MEDIA_WIFI_LOCK_TAG);

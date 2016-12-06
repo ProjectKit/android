@@ -198,7 +198,7 @@ public class PreviewImageFragment extends FileFragment {
         mAccount = getArguments().getParcelable(PreviewAudioFragment.EXTRA_ACCOUNT);
 
         if (mAccount == null) {
-            throw new IllegalStateException("Instanced with a NULL ownCloud Account");
+            throw new IllegalStateException("Instanced with a NULL ProjectKit Drive Account");
         }
         if (getFile() == null) {
             throw new IllegalStateException("Instanced with a NULL OCFile");

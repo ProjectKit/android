@@ -176,7 +176,7 @@ public class FileSyncAdapter extends AbstractOwnCloudSyncAdapter {
             return;
         }
         
-        Log_OC.d(TAG, "Synchronization of ownCloud account " + account.name + " starting");
+        Log_OC.d(TAG, "Synchronization of ProjectKit Drive account " + account.name + " starting");
         sendLocalBroadcast(EVENT_FULL_SYNC_START, null, null);  // message to signal the start
                                                                 // of the synchronization to the UI
         

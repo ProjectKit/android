@@ -162,10 +162,10 @@ public class ReceiveExternalFilesActivity extends FileActivity
             mAccountManager = (AccountManager) getSystemService(Context.ACCOUNT_SERVICE);
             Account[] accounts = mAccountManager.getAccountsByType(MainApp.getAccountType());
             if (accounts.length == 0) {
-                Log_OC.i(TAG, "No ownCloud account is available");
+                Log_OC.i(TAG, "No ProjectKit Drive account is available");
                 showDialog(DIALOG_NO_ACCOUNT);
             } else if (accounts.length > 1 && !mAccountSelected && !mAccountSelectionShowing) {
-                Log_OC.i(TAG, "More than one ownCloud is available");
+                Log_OC.i(TAG, "More than one ProjectKit Drive is available");
                 showDialog(DIALOG_MULTIPLE_ACCOUNT);
                 mAccountSelectionShowing = true;
             } else {

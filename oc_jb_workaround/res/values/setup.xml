@@ -18,8 +18,8 @@
 -->
 <resources>
 
-    <string name="workaround_app_name">ownCloud Jelly Bean Workaround for lost credentials</string>
-    <string name="main_app_name">ownCloud</string>
-    <string name="account_type">owncloud</string>
+    <string name="workaround_app_name">ProjectKit Drive Jelly Bean Workaround for lost credentials</string>
+    <string name="main_app_name">ProjectKit Drive</string>
+    <string name="account_type">ProjectKit Drive</string>
     
 </resources>
