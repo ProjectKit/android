@@ -23,12 +23,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.OwnCloudCredentials;
 import com.owncloud.android.lib.common.network.RedirectionPath;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.ExistenceCheckRemoteOperation;
 import com.owncloud.android.lib.resources.users.GetRemoteUserInfoOperation;
 
@@ -63,6 +65,7 @@ public class AuthenticatorAsyncTask  extends AsyncTask<Object, Void, RemoteOpera
             Uri uri = Uri.parse(url);
             OwnCloudClient client = OwnCloudClientFactory.createOwnCloudClient(uri, mContext, true);
             client.setCredentials(credentials);
+
 
             // Operation - try credentials
             ExistenceCheckRemoteOperation operation = new ExistenceCheckRemoteOperation(

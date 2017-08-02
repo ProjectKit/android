@@ -29,22 +29,28 @@ import java.security.cert.X509Certificate;
 
 import com.owncloud.android.lib.common.network.NetworkUtils;
 import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.operations.OAuth2GetAccessToken;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslCertificate;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.HttpAuthHandler;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 
 /**
@@ -68,15 +74,22 @@ public class SsoWebViewClient extends WebViewClient {
     private String mTargetUrl;
     private String mLastReloadedUrlAtError;
 
-    
+    //
+    private String mAccessToken;
+
     public SsoWebViewClient (Context context, Handler listenerHandler, SsoWebViewClientListener listener) {
         mContext = context;
         mListenerHandler = listenerHandler;
         mListenerRef = new WeakReference<SsoWebViewClient.SsoWebViewClientListener>(listener);
-        mTargetUrl = "fake://url.to.be.set";
+        //mTargetUrl = "fake://url.to.be.set";
+        mTargetUrl = "pk://auth/callback";
         mLastReloadedUrlAtError = null;
     }
-    
+
+    public String getmAccessToken() {
+        return mAccessToken;
+    }
+
     public String getTargetUrl() {
         return mTargetUrl;
     }
@@ -102,7 +115,14 @@ public class SsoWebViewClient extends WebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        return false;
+        if( url.startsWith("http:") || url.startsWith("https:") ) {
+            return false;
+        }
+
+        // Otherwise allow the OS to handle things like tel, mailto, etc.
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        mContext.startActivity(intent);
+        return true;
     }
     
     @Override
@@ -120,7 +140,7 @@ public class SsoWebViewClient extends WebViewClient {
     @Override
     public void onPageFinished (WebView view, String url) {
         Log_OC.d(TAG, "onPageFinished : " + url);
-        mLastReloadedUrlAtError = null;
+//        mLastReloadedUrlAtError = null;
         if (url.startsWith(mTargetUrl)) {
             view.setVisibility(View.GONE);
             CookieManager cookieManager = CookieManager.getInstance();
@@ -133,13 +153,22 @@ public class SsoWebViewClient extends WebViewClient {
                     public void run() {
                         SsoWebViewClientListener listener = mListenerRef.get();
                         if (listener != null) {
-                        	// Send Cookies to the listener
+                            // Send Cookies to the listener
                             listener.onSsoFinished(cookies);
                         }
                     }
                 });
             }
-        } 
+        }
+        //pklogin: get accesstoken
+        String fragment = "#access_token=";
+        String fragment2 = "&scope=";
+        int start = url.indexOf(fragment);
+        int stop = url.indexOf(fragment2);
+        if (start > -1) {
+            mAccessToken = url.substring(start + fragment.length(), stop);;
+            Toast.makeText(mContext, "Access Token: "+mAccessToken, Toast.LENGTH_LONG).show();
+        }
     }
     
     @Override
@@ -193,5 +222,4 @@ public class SsoWebViewClient extends WebViewClient {
 
         ((AuthenticatorActivity)mContext).createAuthenticationDialog(view, handler);
     }
-
 }

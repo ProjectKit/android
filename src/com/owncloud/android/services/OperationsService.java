@@ -634,13 +634,13 @@ public class OperationsService extends Service {
 
                 } else if (action.equals(ACTION_OAUTH2_GET_ACCESS_TOKEN)) {
                     /// GET ACCESS TOKEN to the OAuth server
-                    String oauth2QueryParameters =
-                            operationIntent.getStringExtra(EXTRA_OAUTH2_QUERY_PARAMETERS);
-                    operation = new OAuth2GetAccessToken(
-                            getString(R.string.oauth2_client_id), 
-                            getString(R.string.oauth2_redirect_uri),       
-                            getString(R.string.oauth2_grant_type),
-                            oauth2QueryParameters);
+//                    String oauth2QueryParameters =
+//                            operationIntent.getStringExtra(EXTRA_OAUTH2_QUERY_PARAMETERS);
+//                    operation = new OAuth2GetAccessToken(
+//                            getString(R.string.oauth2_client_id),
+//                            getString(R.string.oauth2_redirect_uri),
+//                            getString(R.string.oauth2_grant_type),
+//                            oauth2QueryParameters);
 
                 } else if (action.equals(ACTION_GET_USER_NAME)) {
                     // Get User Name

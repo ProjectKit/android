@@ -43,6 +43,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -55,7 +56,9 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.HttpAuthHandler;
 import android.webkit.SslErrorHandler;
+import android.webkit.URLUtil;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -181,6 +184,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     private EditText mUsernameInput;
     private EditText mPasswordInput;
     private View mOkButton;
+    private View mPkLoginButton, mButtonLogIn;
     private TextView mAuthStatusView;
 
     private int mAuthStatusText = 0, mAuthStatusIcon = 0;
@@ -200,6 +204,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     private final String SAML_TOKEN_TYPE =
             AccountTypeUtils.getAuthTokenTypeSamlSessionCookie(MainApp.getAccountType());
 
+    private WebView webViewLogin;
+    private String pkAccessToken;
 
     /**
      * {@inheritDoc}
@@ -261,6 +267,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         /// initialize general UI elements
         initOverallUi();
 
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.welcome_toolbar);
+        setSupportActionBar(myToolbar);
         mOkButton = findViewById(R.id.buttonOK);
         mOkButton.setOnClickListener(new View.OnClickListener() {
 
@@ -286,7 +294,23 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             }
         });
 
+        mButtonLogIn = findViewById(R.id.buttonLogIn);
+        mButtonLogIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setWebView();
+            }
+        });
 
+        mPkLoginButton = findViewById(R.id.btnPkLogin);
+        mPkLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setWebView();
+                /// validate credentials accessing the root folder using accesstoken
+
+            }
+        });
         /// initialize block to be moved to single Fragment to check server and get info about it 
         initServerPreFragment(savedInstanceState);
         
@@ -294,6 +318,53 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         initAuthorizationPreFragment(savedInstanceState);
 
         //Log_OC.e(TAG,  "onCreate end");
+
+
+    }
+
+
+    private void setWebView() {
+        String url = "https://id.projectkit.net/auth/signin" +
+                "?ui_locales=en-US&client_id=" + getString(R.string.oauth2_client_id) +
+                "&response_type=" + getString(R.string.oauth2_response_type) +
+                "&redirect_uri=" + getString(R.string.oauth2_redirect_uri) +
+                "&scope=" + getString(R.string.oauth2_scope) +
+                "&contextData={%22fromApp%22:%22mobileApp%22}&nonce=g4sg6";
+
+        setContentView(R.layout.account_setup_webview);
+        webViewLogin = (WebView) findViewById(R.id.webViewLogin);
+        webViewLogin.loadUrl(url);
+
+        webViewLogin.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                Log_OC.d("URL: ",url);
+                String fragment = "#access_token=";
+                String fragment2 = "&scope=";
+                int start = url.indexOf(fragment);
+                int stop = url.indexOf(fragment2);
+                if (start > -1) {
+                    pkAccessToken = url.substring(start + fragment.length(), stop);
+                    Log_OC.d("TOKEN", pkAccessToken);
+                }
+                if (pkAccessToken != null) {
+                    checkBasicAuthorization();
+                }
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if( URLUtil.isNetworkUrl(url) ) {
+                    return false;
+                }
+
+                // Otherwise allow the OS to handle it
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity( intent );
+                return true;
+            }
+        });
     }
 
     private void initAuthTokenType() {
@@ -597,8 +668,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         }
     }
 
-
-
     /**
      * Saves relevant state before {@link #onPause()}
      * 
@@ -639,7 +708,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         outState.putBoolean(KEY_AUTH_IS_FIRST_ATTEMPT_TAG, mIsFirstAuthAttempt);
 
         /// AsyncTask (User and password)
-        outState.putString(KEY_USERNAME, mUsernameInput.getText().toString().trim());
+        outState.putString(KEY_USERNAME, "");
         outState.putString(KEY_PASSWORD, mPasswordInput.getText().toString());
 
         if (mAsyncTask != null) {
@@ -704,9 +773,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         mHostUrlInput.setOnFocusChangeListener(this);
         mHostUrlInput.addTextChangedListener(mHostUrlInputWatcher);
         
-        if (mNewCapturedUriFromOAuth2Redirection != null) {
-            getOAuth2AccessTokenFromCapturedRedirection();            
-        }
+//        if (mNewCapturedUriFromOAuth2Redirection != null) {
+//            getOAuth2AccessTokenFromCapturedRedirection();
+//        }
         
         if (mOperationsServiceBinder != null) {
             doOnResumeAndBound();
@@ -747,6 +816,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     private void getOAuth2AccessTokenFromCapturedRedirection() {
         /// Parse data from OAuth redirection
         String queryParameters = mNewCapturedUriFromOAuth2Redirection.getQuery();
+        if (queryParameters!=null)
+            Log_OC.v("queryParameters", queryParameters);
         mNewCapturedUriFromOAuth2Redirection = null;
 
         /// Showing the dialog with instructions for the user.
@@ -954,14 +1025,14 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
      */
     private void checkBasicAuthorization() {
         /// get basic credentials entered by user
-        String username = mUsernameInput.getText().toString().trim();
-        String password = mPasswordInput.getText().toString();
+        String username = "pkdrive";
+        String password = pkAccessToken;
 
         /// be gentle with the user
         LoadingDialog dialog = LoadingDialog.newInstance(R.string.auth_trying_to_login, true);
         dialog.show(getSupportFragmentManager(), WAIT_DIALOG_TAG);
 
-        /// validate credentials accessing the root folder
+        /// validate credentials accessing the root folder using username, password
         OwnCloudCredentials credentials = OwnCloudCredentialsFactory.newBasicCredentials(username,
                 password);
         accessRootFolder(credentials);
@@ -1031,18 +1102,18 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     @Override
     public void onRemoteOperationFinish(RemoteOperation operation, RemoteOperationResult result) {
 
-        if (operation instanceof GetServerInfoOperation) {
-            if (operation.hashCode() == mWaitingForOpId) {
-                onGetServerInfoFinish(result);
-            }   // else nothing ; only the last check operation is considered; 
-                // multiple can be started if the user amends a URL quickly
-
-        } else if (operation instanceof OAuth2GetAccessToken) {
-            onGetOAuthAccessTokenFinish(result);
-
-        } else if (operation instanceof GetRemoteUserInfoOperation) {
-            onGetUserNameFinish(result);
-        }
+//        if (operation instanceof GetServerInfoOperation) {
+//            if (operation.hashCode() == mWaitingForOpId) {
+//                onGetServerInfoFinish(result);
+//            }   // else nothing ; only the last check operation is considered;
+//                // multiple can be started if the user amends a URL quickly
+//
+//        } else if (operation instanceof OAuth2GetAccessToken) {
+//            onGetOAuthAccessTokenFinish(result);
+//
+//        } else if (operation instanceof GetRemoteUserInfoOperation) {
+//            onGetUserNameFinish(result);
+//        }
 
     }
 
@@ -1421,7 +1492,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
             if (mAction == ACTION_CREATE) {
                 success = createAccount(result);
-
             } else {
                 try {
                     updateAccountAuthentication();
@@ -1541,7 +1611,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         }
 
         Uri uri = Uri.parse(mServerInfo.mBaseUrl);
-        String username = mUsernameInput.getText().toString().trim();
+        String username = "";
         if (isOAuth) {
             username = "OAuth_user" + (new java.util.Random(System.currentTimeMillis())).nextLong();
         }
@@ -1564,7 +1634,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 mAccountMgr.addAccountExplicitly(mAccount, "", null);  
             } else {
                 mAccountMgr.addAccountExplicitly(
-                        mAccount, mPasswordInput.getText().toString(), null
+                        mAccount, pkAccessToken, null
                 );
             }
 
@@ -1596,11 +1666,15 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             }
             /// add user data to the new account; TODO probably can be done in the last parameter 
             //      addAccountExplicitly, or in KEY_USERDATA
+//            mAccountMgr.setUserData(
+//                    mAccount, Constants.KEY_OC_VERSION, mServerInfo.mVersion.getVersion()
+//            );
+//            mAccountMgr.setUserData(
+//                    mAccount, Constants.KEY_OC_BASE_URL,   mServerInfo.mBaseUrl
+//            );
+
             mAccountMgr.setUserData(
-                    mAccount, Constants.KEY_OC_VERSION, mServerInfo.mVersion.getVersion()
-            );
-            mAccountMgr.setUserData(
-                    mAccount, Constants.KEY_OC_BASE_URL,   mServerInfo.mBaseUrl
+                    mAccount, Constants.KEY_OC_BASE_URL,   "http://drive.projectkit.net"
             );
             if (authResult.getData() != null) {
                 try {

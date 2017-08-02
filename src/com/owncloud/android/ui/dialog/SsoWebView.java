@@ -32,7 +32,12 @@ public class SsoWebView extends WebView {
     public SsoWebView(Context context, AttributeSet attr) {
         super(context, attr);
     }
-    
+
+    @Override
+    public void loadUrl(String url) {
+        super.loadUrl(url);
+    }
+
     @Override
     public boolean onCheckIsTextEditor () {
         return false;

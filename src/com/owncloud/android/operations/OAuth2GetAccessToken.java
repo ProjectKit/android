@@ -137,6 +137,9 @@ public class OAuth2GetAccessToken extends RemoteOperation {
     
     
     private void parseAuthorizationResponse() {
+        //change & to # for accessToken
+        mOAuth2AuthorizationResponse.replace('#', '&');
+
         String[] pairs = mOAuth2AuthorizationResponse.split("&");
         int i = 0;
         String key = "";
