@@ -459,11 +459,11 @@
     <string name="local_file_not_found_toast">The file was not found in the local file system</string>
     <string name="confirmation_remove_files_alert">Do you really want to remove the selected items?</string>
     <string name="confirmation_remove_folders_alert">Do you really want to remove the selected items and their contents?</string>
-    <string name="setup_btn_pk_login">Login with your ProjectKit account</string>
+    <string name="setup_btn_pk_login">Login with your VCIC account</string>
     <string name="home_sign_up">Sign Up</string>
     <string name="home_log_in">Log In</string>
-    <string name="welcome_to_projectkit">Welcome to ProjectKit Drive</string>
-    <string name="welcome_description">Join millions of people who are using ProjectKit to achieve amazing things</string>
+    <string name="welcome_to_projectkit">Welcome to VCIC Drive</string>
+    <string name="welcome_description">Join millions of people who are using VCIC to achieve amazing things</string>
     <plurals name="items_selected_count">
         <item quantity="one">%d selected</item>
         <item quantity="other">%d selected</item>
