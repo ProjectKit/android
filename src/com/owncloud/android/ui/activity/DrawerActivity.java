@@ -456,7 +456,7 @@ public abstract class DrawerActivity extends ToolbarActivity {
                 account,
                 (ImageView) findNavigationViewChildById(R.id.drawer_current_account),
                 mCurrentAccountAvatarRadiusDimension,
-                false
+                true
             );
         }
     }
