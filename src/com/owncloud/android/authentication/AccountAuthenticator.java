@@ -91,7 +91,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
                 e.printStackTrace();
                 return e.getFailureBundle();
             }
-            
+            Log_OC.e(TAG, "addAccount calls AuthenticatorActivity");
             final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
             intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
             intent.putExtra(KEY_AUTH_TOKEN_TYPE, authTokenType);
@@ -191,17 +191,18 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         }
         
         /// if not stored, return Intent to access the AuthenticatorActivity and UPDATE the token for the account
-        final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
-        intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
-        intent.putExtra(KEY_AUTH_TOKEN_TYPE, authTokenType);
-        intent.putExtra(KEY_LOGIN_OPTIONS, options);
-        intent.putExtra(AuthenticatorActivity.EXTRA_ACCOUNT, account);
-        intent.putExtra(AuthenticatorActivity.EXTRA_ACTION, AuthenticatorActivity.ACTION_UPDATE_EXPIRED_TOKEN);
-        
-
-        final Bundle bundle = new Bundle();
-        bundle.putParcelable(AccountManager.KEY_INTENT, intent);
-        return bundle;
+        Log_OC.e(TAG, "If not stored, return Intent to access the AuthenticatorActivity and UPDATE the token for the account");
+//        final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
+//        intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+//        intent.putExtra(KEY_AUTH_TOKEN_TYPE, authTokenType);
+//        intent.putExtra(KEY_LOGIN_OPTIONS, options);
+//        intent.putExtra(AuthenticatorActivity.EXTRA_ACCOUNT, account);
+//        intent.putExtra(AuthenticatorActivity.EXTRA_ACTION, AuthenticatorActivity.ACTION_UPDATE_EXPIRED_TOKEN);
+//
+//
+//        final Bundle bundle = new Bundle();
+//        bundle.putParcelable(AccountManager.KEY_INTENT, intent);
+        return null;
     }
 
     @Override

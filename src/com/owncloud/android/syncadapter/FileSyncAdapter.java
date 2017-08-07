@@ -397,22 +397,26 @@ public class FileSyncAdapter extends AbstractOwnCloudSyncAdapter {
                 ResultCode.UNAUTHORIZED.equals(mLastFailedResult.getCode())
         );
         if (needsToUpdateCredentials) {
+            Log_OC.e(TAG, "sync failed");
             // let the user update credentials with one click
-            Intent updateAccountCredentials = new Intent(getContext(), AuthenticatorActivity.class);
-            updateAccountCredentials.putExtra(AuthenticatorActivity.EXTRA_ACCOUNT, getAccount());
-            updateAccountCredentials.putExtra(AuthenticatorActivity.EXTRA_ACTION,
-                    AuthenticatorActivity.ACTION_UPDATE_EXPIRED_TOKEN);
-            updateAccountCredentials.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            updateAccountCredentials.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            updateAccountCredentials.addFlags(Intent.FLAG_FROM_BACKGROUND);
+//            Intent updateAccountCredentials = new Intent(getContext(), AuthenticatorActivity.class);
+//            updateAccountCredentials.putExtra(AuthenticatorActivity.EXTRA_ACCOUNT, getAccount());
+//            updateAccountCredentials.putExtra(AuthenticatorActivity.EXTRA_ACTION,
+//                    AuthenticatorActivity.ACTION_UPDATE_EXPIRED_TOKEN);
+//            updateAccountCredentials.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            updateAccountCredentials.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+//            updateAccountCredentials.addFlags(Intent.FLAG_FROM_BACKGROUND);
+//            notificationBuilder
+//                .setTicker(i18n(R.string.sync_fail_ticker_unauthorized))
+//                .setContentTitle(i18n(R.string.sync_fail_ticker_unauthorized))
+//                .setContentIntent(PendingIntent.getActivity(
+//                    getContext(), (int)System.currentTimeMillis(), updateAccountCredentials,
+//                        PendingIntent.FLAG_ONE_SHOT
+//                ))
+//                .setContentText(i18n(R.string.sync_fail_content_unauthorized, getAccount().name));
             notificationBuilder
-                .setTicker(i18n(R.string.sync_fail_ticker_unauthorized))
-                .setContentTitle(i18n(R.string.sync_fail_ticker_unauthorized))
-                .setContentIntent(PendingIntent.getActivity(
-                    getContext(), (int)System.currentTimeMillis(), updateAccountCredentials,
-                        PendingIntent.FLAG_ONE_SHOT
-                ))
-                .setContentText(i18n(R.string.sync_fail_content_unauthorized, getAccount().name));
+                    .setTicker(i18n(R.string.sync_fail_ticker_unauthorized))
+                    .setContentTitle(i18n(R.string.sync_fail_ticker_unauthorized));
         } else {
             notificationBuilder
                 .setTicker(i18n(R.string.sync_fail_ticker))

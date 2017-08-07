@@ -184,7 +184,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     private EditText mUsernameInput;
     private EditText mPasswordInput;
     private View mOkButton;
-    private View mPkLoginButton, mButtonLogIn;
+    private View mPkLoginButton, mButtonLogIn, mButtonSignUp;
     private TextView mAuthStatusView;
 
     private int mAuthStatusText = 0, mAuthStatusIcon = 0;
@@ -204,7 +204,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     private final String SAML_TOKEN_TYPE =
             AccountTypeUtils.getAuthTokenTypeSamlSessionCookie(MainApp.getAccountType());
 
-    private WebView webViewLogin;
+    private WebView webViewLogin, webvViewSignUp;
     private String pkAccessToken;
 
     /**
@@ -214,7 +214,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //Log_OC.e(TAG,  "onCreate init");
+        Log_OC.e(TAG,  "onCreate init");
         super.onCreate(savedInstanceState);
 
         /// protection against screen recording
@@ -307,14 +307,23 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             @Override
             public void onClick(View v) {
                 setWebView();
-                /// validate credentials accessing the root folder using accesstoken
 
+            }
+        });
+
+        mButtonSignUp = findViewById(R.id.buttonSignUp);
+        mButtonSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = "https://id.projectkit.net/signup-mobile?locale=en-US";
+                setContentView(R.layout.account_webview_signup);
+                webvViewSignUp = (WebView) findViewById(R.id.webViewSignUp);
+                webvViewSignUp.loadUrl(url);
             }
         });
         /// initialize block to be moved to single Fragment to check server and get info about it 
         initServerPreFragment(savedInstanceState);
-        
-        /// initialize block to be moved to single Fragment to retrieve and validate credentials 
+        /// initialize block to be moved to single Fragment to retrieve and validate credentials
         initAuthorizationPreFragment(savedInstanceState);
 
         //Log_OC.e(TAG,  "onCreate end");
@@ -340,17 +349,22 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 Log_OC.d("URL: ",url);
-                String fragment = "#access_token=";
-                String fragment2 = "&scope=";
-                int start = url.indexOf(fragment);
-                int stop = url.indexOf(fragment2);
-                if (start > -1) {
-                    pkAccessToken = url.substring(start + fragment.length(), stop);
-                    Log_OC.d("TOKEN", pkAccessToken);
+                if (url.contains("access_token")) {
+                    String fragment = "#access_token=";
+                    String fragment2 = "&scope=";
+                    int start = url.indexOf(fragment);
+                    int stop = url.indexOf(fragment2);
+                    if (start > -1) {
+                        pkAccessToken = url.substring(start + fragment.length(), stop);
+                        Log_OC.d("TOKEN", pkAccessToken);
+                        checkBasicAuthorization();
+                    }
+//                    if (pkAccessToken != null) {
+//
+//                    }
+//                    checkBasicAuthorization();
                 }
-                if (pkAccessToken != null) {
-                    checkBasicAuthorization();
-                }
+
             }
 
             @Override
@@ -1025,8 +1039,14 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
      */
     private void checkBasicAuthorization() {
         /// get basic credentials entered by user
+
         String username = "pkdrive";
         String password = pkAccessToken;
+
+        if(pkAccessToken == null || pkAccessToken.equals("")){
+            username = mUsernameInput.getText().toString();
+            password = mPasswordInput.getText().toString();
+        }
 
         /// be gentle with the user
         LoadingDialog dialog = LoadingDialog.newInstance(R.string.auth_trying_to_login, true);
@@ -1102,26 +1122,28 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     @Override
     public void onRemoteOperationFinish(RemoteOperation operation, RemoteOperationResult result) {
 
-//        if (operation instanceof GetServerInfoOperation) {
-//            if (operation.hashCode() == mWaitingForOpId) {
-//                onGetServerInfoFinish(result);
-//            }   // else nothing ; only the last check operation is considered;
-//                // multiple can be started if the user amends a URL quickly
-//
-//        } else if (operation instanceof OAuth2GetAccessToken) {
-//            onGetOAuthAccessTokenFinish(result);
-//
-//        } else if (operation instanceof GetRemoteUserInfoOperation) {
+        if (operation instanceof GetServerInfoOperation) {
+            if (operation.hashCode() == mWaitingForOpId) {
+                onGetServerInfoFinish(result);
+            }   // else nothing ; only the last check operation is considered;
+                // multiple can be started if the user amends a URL quickly
+
+        } else if (operation instanceof OAuth2GetAccessToken) {
+            onGetOAuthAccessTokenFinish(result);
+
+        } else if (operation instanceof GetRemoteUserInfoOperation) {
+            onGetUserNameFinish(result);
+        }
+//        if (operation instanceof GetRemoteUserInfoOperation) {
 //            onGetUserNameFinish(result);
 //        }
-
     }
 
     private void onGetUserNameFinish(RemoteOperationResult result) {
         mWaitingForOpId = Long.MAX_VALUE;
         if (result.isSuccess()) {
             boolean success = false;
-            String username = ((UserInfo) result.getData().get(0)).mDisplayName;
+            String username = ((UserInfo) result.getData().get(0)).mEmail;
             if ( mAction == ACTION_CREATE) {
                 mUsernameInput.setText(username);
                 success = createAccount(result);
@@ -1611,7 +1633,11 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         }
 
         Uri uri = Uri.parse(mServerInfo.mBaseUrl);
-        String username = "";
+        UserInfo userInfo1 = (UserInfo) authResult.getData().get(0);
+
+        String username = userInfo1.mEmail;
+
+//        String username = "";
         if (isOAuth) {
             username = "OAuth_user" + (new java.util.Random(System.currentTimeMillis())).nextLong();
         }
@@ -1631,11 +1657,16 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             
             if (isOAuth || isSaml) {
                 // with external authorizations, the password is never input in the app
-                mAccountMgr.addAccountExplicitly(mAccount, "", null);  
+                mAccountMgr.addAccountExplicitly(mAccount, "", null);
             } else {
-                mAccountMgr.addAccountExplicitly(
-                        mAccount, pkAccessToken, null
-                );
+                if(pkAccessToken == null || pkAccessToken.equals("")){
+                    mAccountMgr.addAccountExplicitly(
+                            mAccount, mPasswordInput.getText().toString(), null
+                    );
+                }else
+                    mAccountMgr.addAccountExplicitly(
+                            mAccount, pkAccessToken, null
+                    );
             }
 
             // include account version with the new account

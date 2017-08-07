@@ -109,7 +109,7 @@ public class AccountListAdapter extends ArrayAdapter<AccountListItem> {
                         account,
                         viewHolder.imageViewItem,
                         mAccountAvatarRadiusDimension,
-                        true
+                        false
                     );
                 } catch (Exception e) {
                     Log_OC.e(TAG, "Error calculating RGB value for account list item.", e);

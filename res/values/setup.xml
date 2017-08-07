@@ -21,7 +21,7 @@
     <bool name="show_welcome_link">true</bool>
 	<string name="welcome_link_url">"http://projectkit.net"</string>
 	<string name="share_api_link"></string>
-    
+
     <!-- Flags to setup the authentication methods available in the app -->
     <string name="auth_method_oauth2">off</string>
     <string name="auth_method_saml_web_sso">off</string>

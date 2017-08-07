@@ -296,7 +296,7 @@ public class FileActivity extends DrawerActivity
                 result.getCode() == ResultCode.UNAUTHORIZED ||
                 (result.isException() && result.getException() instanceof AuthenticatorException)
                 )) {
-
+            Log_OC.e(TAG, "onRemoteOperationFinish");
             requestCredentialsUpdate(this);
 
             if (result.getCode() == ResultCode.UNAUTHORIZED) {
@@ -393,13 +393,15 @@ public class FileActivity extends DrawerActivity
             }
 
             /// step 2 - request credentials to user
-            Intent updateAccountCredentials = new Intent(this, AuthenticatorActivity.class);
-            updateAccountCredentials.putExtra(AuthenticatorActivity.EXTRA_ACCOUNT, account);
-            updateAccountCredentials.putExtra(
-                    AuthenticatorActivity.EXTRA_ACTION,
-                    AuthenticatorActivity.ACTION_UPDATE_EXPIRED_TOKEN);
-            updateAccountCredentials.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            startActivityForResult(updateAccountCredentials, REQUEST_CODE__UPDATE_CREDENTIALS);
+            Log_OC.e(TAG, "Disable Request credentials to user");
+            Toast.makeText(getApplicationContext(), "Request credentials to user", Toast.LENGTH_LONG).show();
+//            Intent updateAccountCredentials = new Intent(this, AuthenticatorActivity.class);
+//            updateAccountCredentials.putExtra(AuthenticatorActivity.EXTRA_ACCOUNT, account);
+//            updateAccountCredentials.putExtra(
+//                    AuthenticatorActivity.EXTRA_ACTION,
+//                    AuthenticatorActivity.ACTION_UPDATE_EXPIRED_TOKEN);
+//            updateAccountCredentials.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+//            startActivityForResult(updateAccountCredentials, REQUEST_CODE__UPDATE_CREDENTIALS);
 
         } catch (com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException e) {
             Toast.makeText(context, R.string.auth_account_does_not_exist, Toast.LENGTH_SHORT).show();

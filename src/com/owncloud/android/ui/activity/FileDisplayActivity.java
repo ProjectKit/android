@@ -952,7 +952,12 @@ public class FileDisplayActivity extends HookActivity
                                 if (ResultCode.UNAUTHORIZED.equals(synchResult.getCode()) ||
                                     (synchResult.isException() && synchResult.getException()
                                         instanceof AuthenticatorException)) {
-
+                                    if (ResultCode.UNAUTHORIZED.equals(synchResult.getCode()))
+                                        Log_OC.e(TAG, "ResultCode UNAUTHORIZED");
+                                    else if (synchResult.isException())
+                                        Log_OC.e(TAG, "synchResult.isException()");
+                                    else if (synchResult.getException() instanceof AuthenticatorException)
+                                        Log_OC.e(TAG, "synchResult instanceof AuthenticatorException");
                                     requestCredentialsUpdate(context);
 
                                 } else if (RemoteOperationResult.ResultCode.SSL_RECOVERABLE_PEER_UNVERIFIED.equals(

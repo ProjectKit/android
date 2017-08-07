@@ -9,7 +9,7 @@
   <string name="actionbar_mkdir">Tạo thư mục</string>
   <string name="actionbar_settings">Cài đặt</string>
   <string name="actionbar_see_details">Chi tiết</string>
-  <string name="actionbar_send_file">Gởi</string>
+  <string name="actionbar_send_file">Gửi</string>
   <!--TODO re-enable when "Accounts" is available in Navigation Drawer-->
   <!--<string name="drawer_item_accounts">Accounts</string>-->
   <string name="drawer_item_all_files">Tất cả tệp tin</string>
@@ -200,4 +200,6 @@
   <string name="share_privilege_can_edit">có thể chỉnh sửa</string>
   <string name="share_privilege_can_edit_create">tạo</string>
   <string name="share_privilege_can_edit_delete">xóa</string>
+    <string name="about_android"></string>
+  <string name="actionbar_sort">Phân loại</string>
 </resources>

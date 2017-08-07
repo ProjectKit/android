@@ -229,11 +229,12 @@ public class ManageAccountsActivity extends FileActivity
 
     @Override
     public void changePasswordOfAccount(Account account) {
-        Intent updateAccountCredentials = new Intent(ManageAccountsActivity.this, AuthenticatorActivity.class);
-        updateAccountCredentials.putExtra(AuthenticatorActivity.EXTRA_ACCOUNT, account);
-        updateAccountCredentials.putExtra(AuthenticatorActivity.EXTRA_ACTION,
-                AuthenticatorActivity.ACTION_UPDATE_TOKEN);
-        startActivity(updateAccountCredentials);
+        Log_OC.e(TAG, "changePasswordOfAccount");
+//        Intent updateAccountCredentials = new Intent(ManageAccountsActivity.this, AuthenticatorActivity.class);
+//        updateAccountCredentials.putExtra(AuthenticatorActivity.EXTRA_ACCOUNT, account);
+//        updateAccountCredentials.putExtra(AuthenticatorActivity.EXTRA_ACTION,
+//                AuthenticatorActivity.ACTION_UPDATE_TOKEN);
+//        startActivity(updateAccountCredentials);
     }
 
     @Override

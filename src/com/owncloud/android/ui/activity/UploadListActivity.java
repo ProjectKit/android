@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentTransaction;
@@ -257,6 +258,7 @@ public class UploadListActivity extends FileActivity implements UploadListFragme
             dismissLoadingDialog();
             Account account = (Account) result.getData().get(0);
             if (!result.isSuccess()) {
+                Log_OC.e(TAG, "onRemoteOperationFinish");
                 requestCredentialsUpdate(this, account);
 
             } else {

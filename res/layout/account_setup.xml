@@ -294,7 +294,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textAllCaps="false"
-                    android:background="@color/welcome_button_background"
+                    android:background="@color/primary"
                     android:textColor="@color/white"
                     android:layout_margin="@dimen/dimen_5"
                     android:text="@string/home_log_in"/>
@@ -304,7 +304,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textAllCaps="false"
-                    android:background="@color/welcome_button_background"
+                    android:background="@color/primary"
                     android:textColor="@color/white"
                     android:layout_margin="@dimen/dimen_5"
                     android:text="@string/home_sign_up"/>
