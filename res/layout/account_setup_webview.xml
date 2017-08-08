@@ -8,8 +8,15 @@
     android:fillViewport="true"
     android:orientation="vertical"
     android:filterTouchesWhenObscured="true">
-    <WebView
-        android:id="@+id/webViewLogin"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <include android:id="@+id/welcome_toolbar" layout="@layout/toolbar_standard"/>
+        <WebView
+            android:id="@+id/webViewLogin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
 </ScrollView>

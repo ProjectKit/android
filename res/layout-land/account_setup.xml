@@ -23,12 +23,11 @@
     android:layout_height="match_parent"
     android:background="@color/welcome_background"
     android:padding="8dip"
-    android:filterTouchesWhenObscured="true"
-    >
+    android:filterTouchesWhenObscured="true">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_above="@+id/bottom_block"
         android:layout_alignParentTop="true"
         android:orientation="horizontal">
@@ -218,11 +217,10 @@
         </ScrollView>
 
     </LinearLayout>
-
     <LinearLayout
         android:id="@id/bottom_block"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
@@ -258,5 +256,74 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_block"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/logo"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/welcome_to_projectkit"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_24"
+                android:textColor="@color/textColor"
+                android:layout_margin="15dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/welcome_description"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_18"
+                android:textColor="@color/textColor"
+                android:layout_margin="10dp"/>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/bottom_block"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="8dp">
+        <Button
+            android:id="@+id/buttonLogIn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:background="@color/primary"
+            android:textColor="@color/white"
+            android:layout_margin="@dimen/dimen_5"
+            android:text="@string/home_log_in"/>
+        <Button
+            android:id="@+id/buttonSignUp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:background="@color/primary"
+            android:textColor="@color/white"
+            android:layout_margin="@dimen/dimen_5"
+            android:text="@string/home_sign_up"/>
+
+    </LinearLayout>
+
 
 </RelativeLayout>
