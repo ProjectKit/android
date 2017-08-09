@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -83,6 +84,7 @@ public class AuthenticatorAsyncTask  extends AsyncTask<Object, Void, RemoteOpera
 
             // Operation - get display name
             if (result.isSuccess()) {
+                Log_OC.d("AuthenticatorAsyncTask", "call GetRemoteUserInfoOperation");
                 GetRemoteUserInfoOperation remoteUserNameOperation = new GetRemoteUserInfoOperation();
                 result = remoteUserNameOperation.execute(client);
             }

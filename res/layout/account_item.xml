@@ -106,7 +106,9 @@
         android:paddingTop="@dimen/standard_padding"
         android:paddingBottom="@dimen/standard_padding"
         android:paddingRight="@dimen/standard_half_padding"
-        android:src="@drawable/ic_key"/>
+        android:src="@drawable/ic_key"
+        android:visibility="gone"
+        android:clickable="false"/>
 
     <ImageView
         android:id="@id/removeButton"

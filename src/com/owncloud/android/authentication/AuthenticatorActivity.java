@@ -48,6 +48,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
@@ -99,6 +100,7 @@ import com.owncloud.android.ui.dialog.SslUntrustedCertDialog.OnSslUntrustedCertL
 import com.owncloud.android.utils.DisplayUtils;
 
 import java.security.cert.X509Certificate;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -206,6 +208,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
     private WebView webViewLogin, webvViewSignUp;
     private String pkAccessToken;
+    private Toolbar myToolbar;
 
     /**
      * {@inheritDoc}
@@ -231,6 +234,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             getSupportActionBar().setDisplayShowHomeEnabled(false);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
+
+        //hide soft keyboard when open app
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         mIsFirstAuthAttempt = true;
 
@@ -267,8 +273,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         /// initialize general UI elements
         initOverallUi();
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.welcome_toolbar);
+        myToolbar = (Toolbar) findViewById(R.id.welcome_toolbar);
         setSupportActionBar(myToolbar);
+
         mOkButton = findViewById(R.id.buttonOK);
         mOkButton.setOnClickListener(new View.OnClickListener() {
 
@@ -301,15 +308,15 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 setWebView();
             }
         });
-
-        mPkLoginButton = findViewById(R.id.btnPkLogin);
-        mPkLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setWebView();
-
-            }
-        });
+//
+//        mPkLoginButton = findViewById(R.id.btnPkLogin);
+//        mPkLoginButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                setWebView();
+//
+//            }
+//        });
 
         mButtonSignUp = findViewById(R.id.buttonSignUp);
         mButtonSignUp.setOnClickListener(new View.OnClickListener() {
@@ -333,14 +340,26 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
 
     private void setWebView() {
+        Log_OC.d(TAG, "Locale: " + Locale.getDefault().toString());
+        String locale = Locale.getDefault().toString();
+        if (locale.equals("vi_VN"))
+            locale = "vi-VN";
+        else if (locale.equals("en_US"))
+            locale = "en-US";
         String url = "https://id.projectkit.net/auth/signin" +
-                "?ui_locales=en-US&client_id=" + getString(R.string.oauth2_client_id) +
+                "?ui_locales="+ locale +"&client_id=" + getString(R.string.oauth2_client_id) +
                 "&response_type=" + getString(R.string.oauth2_response_type) +
                 "&redirect_uri=" + getString(R.string.oauth2_redirect_uri) +
                 "&scope=" + getString(R.string.oauth2_scope) +
                 "&contextData={%22fromApp%22:%22mobileApp%22}&nonce=g4sg6";
 
         setContentView(R.layout.account_setup_webview);
+        Toolbar myToolbar1 = (Toolbar) findViewById(R.id.welcome_toolbar);
+        setSupportActionBar(myToolbar1);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
         webViewLogin = (WebView) findViewById(R.id.webViewLogin);
         webViewLogin.loadUrl(url);
 
@@ -359,10 +378,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                         Log_OC.d("TOKEN", pkAccessToken);
                         checkBasicAuthorization();
                     }
-//                    if (pkAccessToken != null) {
-//
-//                    }
-//                    checkBasicAuthorization();
                 }
 
             }
@@ -379,6 +394,15 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 return true;
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            setContentView(R.layout.account_setup);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void initAuthTokenType() {
@@ -637,7 +661,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 return true;
             }
         });
-        
+        mUsernameInput.setFocusable(false);
     }
 
 
@@ -1132,6 +1156,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             onGetOAuthAccessTokenFinish(result);
 
         } else if (operation instanceof GetRemoteUserInfoOperation) {
+            Log_OC.d(TAG, "onGetUserNameFinish");
             onGetUserNameFinish(result);
         }
 //        if (operation instanceof GetRemoteUserInfoOperation) {
