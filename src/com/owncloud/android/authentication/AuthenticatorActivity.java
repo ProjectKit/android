@@ -33,6 +33,8 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
@@ -63,6 +65,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -209,6 +212,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     private WebView webViewLogin, webvViewSignUp;
     private String pkAccessToken;
     private Toolbar myToolbar;
+    private View accountWelcomeSetup;
 
     /**
      * {@inheritDoc}
@@ -276,6 +280,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         myToolbar = (Toolbar) findViewById(R.id.welcome_toolbar);
         setSupportActionBar(myToolbar);
 
+        accountWelcomeSetup = findViewById(R.id.account_welcome_setup);
         mOkButton = findViewById(R.id.buttonOK);
         mOkButton.setOnClickListener(new View.OnClickListener() {
 
@@ -305,7 +310,14 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         mButtonLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setWebView();
+                ConnectivityManager cm = (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+                if (!isConnected)
+                    Toast.makeText(getBaseContext(), "No internet", Toast.LENGTH_LONG).show();
+                else
+                    setWebView();
             }
         });
 //
@@ -323,6 +335,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             @Override
             public void onClick(View v) {
                 String url = "https://id.projectkit.net/signup-mobile?locale=en-US";
+                //change this, shouldn't use setContentView
                 setContentView(R.layout.account_webview_signup);
                 webvViewSignUp = (WebView) findViewById(R.id.webViewSignUp);
                 webvViewSignUp.loadUrl(url);
@@ -334,7 +347,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         initAuthorizationPreFragment(savedInstanceState);
 
         //Log_OC.e(TAG,  "onCreate end");
-
 
     }
 
@@ -353,14 +365,13 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 "&scope=" + getString(R.string.oauth2_scope) +
                 "&contextData={%22fromApp%22:%22mobileApp%22}&nonce=g4sg6";
 
-        setContentView(R.layout.account_setup_webview);
-        Toolbar myToolbar1 = (Toolbar) findViewById(R.id.welcome_toolbar);
-        setSupportActionBar(myToolbar1);
+        webViewLogin = (WebView) findViewById(R.id.webViewLogin);
+        accountWelcomeSetup.setVisibility(View.GONE);
+        webViewLogin.setVisibility(View.VISIBLE);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        webViewLogin = (WebView) findViewById(R.id.webViewLogin);
         webViewLogin.loadUrl(url);
 
         webViewLogin.setWebViewClient(new WebViewClient() {
@@ -379,7 +390,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                         checkBasicAuthorization();
                     }
                 }
-
             }
 
             @Override
@@ -393,16 +403,25 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 startActivity( intent );
                 return true;
             }
+
         });
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            setContentView(R.layout.account_setup);
-        }
+    public void onBackPressed() {
+        accountWelcomeSetup.setVisibility(View.VISIBLE);
+        webViewLogin.setVisibility(View.GONE);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
 
-        return super.onOptionsItemSelected(item);
+    @Override
+    public boolean onSupportNavigateUp() {
+        accountWelcomeSetup.setVisibility(View.VISIBLE);
+        webViewLogin.setVisibility(View.GONE);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        return true;
     }
 
     private void initAuthTokenType() {

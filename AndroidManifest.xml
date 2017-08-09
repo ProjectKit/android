@@ -62,7 +62,8 @@
         android:theme="@style/Theme.ownCloud.Toolbar"
         android:manageSpaceActivity=".ui.activity.ManageSpaceActivity"
         android:resizeableActivity="true"
-        android:supportsPictureInPicture="false" >
+        android:supportsPictureInPicture="false"
+        android:screenOrientation="portrait">
         <activity
             android:name=".ui.activity.FileDisplayActivity"
             android:theme="@style/Theme.ownCloud.Toolbar.Drawer">
@@ -167,6 +168,7 @@
             android:name=".authentication.AuthenticatorActivity"
             android:exported="true"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
