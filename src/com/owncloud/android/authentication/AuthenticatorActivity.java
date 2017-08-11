@@ -386,7 +386,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                     int stop = url.indexOf(fragment2);
                     if (start > -1) {
                         pkAccessToken = url.substring(start + fragment.length(), stop);
-                        Log_OC.d("TOKEN", pkAccessToken);
+                        Log_OC.e("TOKEN", pkAccessToken);
                         checkBasicAuthorization();
                     }
                 }
@@ -1082,28 +1082,32 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
      */
     private void checkBasicAuthorization() {
         /// get basic credentials entered by user
-
+        Log_OC.e(TAG, "Setting username and password...");
         String username = "pkdrive";
         String password = pkAccessToken;
-
+        Log_OC.e(TAG, "Finish setting username and password");
         if(pkAccessToken == null || pkAccessToken.equals("")){
             username = mUsernameInput.getText().toString();
             password = mPasswordInput.getText().toString();
         }
-
+        Log_OC.e(TAG, "Start loadding dialog");
         /// be gentle with the user
         LoadingDialog dialog = LoadingDialog.newInstance(R.string.auth_trying_to_login, true);
         dialog.show(getSupportFragmentManager(), WAIT_DIALOG_TAG);
-
+        Log_OC.e(TAG, "Create owncloud credential");
         /// validate credentials accessing the root folder using username, password
         OwnCloudCredentials credentials = OwnCloudCredentialsFactory.newBasicCredentials(username,
                 password);
+        Log_OC.e(TAG, "Access root folder");
         accessRootFolder(credentials);
+
     }
 
     private void accessRootFolder(OwnCloudCredentials credentials) {
         mAsyncTask = new AuthenticatorAsyncTask(this);
+
         Object[] params = { mServerInfo.mBaseUrl, credentials };
+        Log_OC.e(TAG, "Starting asyncTask");
         mAsyncTask.execute(params);
     }
 

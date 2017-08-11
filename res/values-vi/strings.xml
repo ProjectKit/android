@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="about_version">phiên bản %1$s</string>
-  <string name="actionbar_sync">Cập nhật lại tài khoản</string>
+  <string name="actionbar_sync">Cập nhật tài khoản</string>
   <string name="actionbar_upload">Tải lên</string>
   <string name="actionbar_upload_from_apps">Nội dung từ các ứng dụng khác</string>
   <string name="actionbar_upload_files">Các tập tin</string>
@@ -22,9 +22,9 @@
   <string name="prefs_manage_accounts">Quản lý tài khoản</string>
   <string name="prefs_log_summary">Được sử dụng cho các vấn đề liên quan đến nhật trình</string>
   <string name="prefs_log_summary_history">Hiển thị các nhật trình đã được ghi nhận lại</string>
-  <string name="prefs_help">Giúp đỡ</string>
+  <string name="prefs_help">Trợ giúp</string>
   <string name="prefs_recommend">Giới thiệu đến bạn bè</string>
-  <string name="prefs_feedback">Phản hồi</string>
+  <string name="prefs_feedback">Gửi phản hồi</string>
   <string name="prefs_imprint">Đánh dấu</string>
   <string name="recommend_subject">Thử %1$s trên smartphone của bạn!</string>
   <string name="auth_host_url">Địa chỉ máy chủ https://…</string>
@@ -180,7 +180,7 @@
   <string name="placeholder_filesize">389 KB</string>
   <string name="placeholder_timestamp">2012/05/18 12:23 PM</string>
   <string name="placeholder_media_time">12:23:45</string>
-  <string name="instant_upload_path">/Tải lên tức thì</string>
+  <string name="instant_upload_path">/Tải lên ngay</string>
   <string name="conflict_keep_both">Giữ cho cả hai</string>
   <string name="preview_image_description">Xem trước hình ảnh</string>
   <string name="share_link_file_error">Một lỗi đã xảy ra khi thử chia sẻ file hoặc thư mục này</string>
@@ -230,10 +230,10 @@
   <string name="upload_move_files">Di chuyển tệp</string>
   <string name="local_file_list_empty">Không có tập tin trong thư mục này.</string>
   <string name="uploads_view_title">Tệp tin đã tải lên</string>
-  <string name="prefs_instant_upload">Tải hình ảnh lên tức thì</string>
+  <string name="prefs_instant_upload">Tải hình ảnh lên ngay</string>
   <string name="prefs_instant_upload_path_title">Đường dẫn tải lên</string>
   <string name="prefs_instant_upload_summary">Ngay lập tức tải hình ảnh chụp bằng máy ảnh</string>
-  <string name="prefs_instant_video_upload">Tải video lên tức thì</string>
+  <string name="prefs_instant_video_upload">Tải video lên ngay</string>
   <string name="prefs_instant_video_upload_path_title">Đường dẫn tải video lên</string>
   <string name="prefs_instant_video_upload_summary">Ngay lập tức tải lên các video được quay bằng máy ảnh</string>
   <string name="instant_upload_on_wifi">Chỉ tải hình ảnh lên khi sử dụng wifi</string>
@@ -270,10 +270,10 @@
   <string name="pass_code_remove_your_pass_code">Nhập lại mật mã</string>
   <string name="pass_code_stored">Mật mã được lưu trữ</string>
   <string name="pass_code_wrong">Nhập sai mã</string>
-  <string name="confirmation_remove_account_alert">\"Bạn có thực sự muốn xóa tài khoản %1$s?\"</string>
-  <string name="confirmation_remove_file_alert">\"Bạn có thực sự muốn xóa %1$s?\"</string>
+  <string name="confirmation_remove_account_alert">Bạn có thực sự muốn xóa tài khoản %1$s?</string>
+  <string name="confirmation_remove_file_alert">Bạn có thực sự muốn xóa %1$s?</string>
   <string name="confirmation_remove_files_alert">Bạn có thực sự muốn loại bỏ các mục đã chọn?</string>
-  <string name="confirmation_remove_folder_alert">\"Bạn có thực sự muốn xóa %1$s và nội dung của nó?\"</string>
+  <string name="confirmation_remove_folder_alert">Bạn có thực sự muốn xóa %1$s và nội dung của nó?</string>
   <string name="confirmation_remove_folders_alert">Bạn có thực sự muốn xóa các mục đã chọn và nội dung của chúng không?</string>
   <plurals name="items_selected_count">
     <item quantity="one">%d đã chọn</item>
@@ -364,7 +364,7 @@
   <string name="network_error_socket_timeout_exception">Đã xảy ra lỗi khi chờ máy chủ, không thể thực hiện thao tác.</string>
   <string name="network_host_not_available">Không thể hoàn thành thao tác, máy chủ không khả dụng</string>
   <string name="permission_storage_access"></string>
-  <string name="prefs_category_instant_uploading">Tải lên tức thì</string>
+  <string name="prefs_category_instant_uploading">Tải lên ngay</string>
   <string name="prefs_log_delete_history_button">Xóa lịch sử</string>
   <string name="prefs_remember_last_share_location">Ghi nhớ vị trí chia sẻ</string>
   <string name="prefs_remember_last_upload_location_summary">Ghi nhớ vị trí tải lên chia sẻ lần cuối</string>

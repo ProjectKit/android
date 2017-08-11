@@ -23,8 +23,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
@@ -42,6 +40,7 @@ import java.lang.ref.WeakReference;
  * Async Task to verify the credentials of a user
  */
 public class AuthenticatorAsyncTask  extends AsyncTask<Object, Void, RemoteOperationResult> {
+    private static String TAG = "AuthenticatorAsyncTask";
 
     private static String REMOTE_PATH = "/";
     private static boolean SUCCESS_IF_ABSENT = false;
@@ -56,18 +55,20 @@ public class AuthenticatorAsyncTask  extends AsyncTask<Object, Void, RemoteOpera
 
     @Override
     protected RemoteOperationResult doInBackground(Object... params) {
-
+        Log_OC.d(TAG, "AsyncTask started!");
         RemoteOperationResult result;
         if (params!= null && params.length==2) {
+            Log_OC.e(TAG, "Getting input for async task");
             String url = (String)params[0];
             OwnCloudCredentials credentials = (OwnCloudCredentials)params[1];
 
             // Client
             Uri uri = Uri.parse(url);
+            Log_OC.e(TAG, "Creating OwnCloud Client");
             OwnCloudClient client = OwnCloudClientFactory.createOwnCloudClient(uri, mContext, true);
             client.setCredentials(credentials);
 
-
+            Log_OC.e(TAG, "Checking remote operation");
             // Operation - try credentials
             ExistenceCheckRemoteOperation operation = new ExistenceCheckRemoteOperation(
                     REMOTE_PATH,
@@ -75,7 +76,12 @@ public class AuthenticatorAsyncTask  extends AsyncTask<Object, Void, RemoteOpera
                     SUCCESS_IF_ABSENT
             );
             result = operation.execute(client);
-
+            int status = result.getHttpCode();
+            if (result.isSuccess())
+                Log_OC.e(TAG, "Check Success!");
+            else {
+                Log_OC.e(TAG, "Error"+result.getLogMessage().toString());
+            }
             if (operation.wasRedirected()) {
                 RedirectionPath redirectionPath = operation.getRedirectionPath();
                 String permanentLocation = redirectionPath.getLastPermanentLocation();
