@@ -140,7 +140,7 @@ public class GetServerInfoOperation extends RemoteOperation {
     
     public static class ServerInfo {
         public OwnCloudVersion mVersion = null;
-        public String mBaseUrl = "http://drive.projectkit.net";
+        public String mBaseUrl = "https://drive.projectkit.net";
         public AuthenticationMethod mAuthMethod = AuthenticationMethod.UNKNOWN;
         public boolean mIsSslConn = false;
     }

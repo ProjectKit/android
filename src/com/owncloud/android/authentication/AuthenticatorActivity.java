@@ -294,7 +294,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
             @Override
             public void onClick(View v) {
-                checkOcServer();
+//                checkOcServer();
             }
         });
 
@@ -302,7 +302,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
             @Override
             public void onClick(View v) {
-                checkOcServer();
+//                checkOcServer();
             }
         });
 
@@ -601,7 +601,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                             ).equals(mAuthTokenType) &&
                                     mHostUrlInput.hasFocus()
                             ) {
-                        checkOcServer();
+//                        checkOcServer();
                     }
                 }
                 return false;
@@ -932,7 +932,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         if (!mServerInfo.mBaseUrl.equals(
                 normalizeUrl(mHostUrlInput.getText().toString(), mServerInfo.mIsSslConn))) {
             // check server again only if the user changed something in the field
-            checkOcServer();
+//            checkOcServer();
         } else {
             mOkButton.setEnabled(mServerIsValid);
             showRefreshButton(!mServerIsValid);
@@ -1753,7 +1753,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 //            );
 
             mAccountMgr.setUserData(
-                    mAccount, Constants.KEY_OC_BASE_URL,   "http://drive.projectkit.net"
+                    mAccount, Constants.KEY_OC_BASE_URL,   "https://drive.projectkit.net"
             );
             if (authResult.getData() != null) {
                 try {
@@ -1891,7 +1891,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 inputField.equals(mHostUrlInput)) {
             if (AccountTypeUtils.getAuthTokenTypeSamlSessionCookie(MainApp.getAccountType()).
                     equals(mAuthTokenType)) {
-                checkOcServer();
+//                checkOcServer();
             }
         }
         return false;   // always return false to grant that the software keyboard is hidden anyway
@@ -1972,7 +1972,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         if (AccountTypeUtils.getAuthTokenTypeSamlSessionCookie(MainApp.getAccountType()).
                 equals(mAuthTokenType) &&
                 mHostUrlInput.hasFocus() && event.getAction() == MotionEvent.ACTION_DOWN) {
-            checkOcServer();
+//            checkOcServer();
         }
         return super.onTouchEvent(event);
     }
@@ -2021,7 +2021,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         if (fd == null) {
             // if SAML dialog is not shown, 
             // the SslDialog was shown due to an SSL error in the server check
-            checkOcServer();
+//            checkOcServer();
         }
     }
 
@@ -2049,7 +2049,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         }
         
         if (mPendingAutoCheck) {
-            checkOcServer();
+//            checkOcServer();
         }
     }
 
