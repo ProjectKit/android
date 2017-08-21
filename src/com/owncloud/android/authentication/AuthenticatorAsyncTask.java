@@ -72,31 +72,31 @@ public class AuthenticatorAsyncTask  extends AsyncTask<Object, Void, RemoteOpera
 
             Log_OC.e(TAG, "Checking remote operation");
             // Operation - try credentials
-//            ExistenceCheckRemoteOperation operation = new ExistenceCheckRemoteOperation(
-//                    REMOTE_PATH,
-//                    mContext,
-//                    SUCCESS_IF_ABSENT
-//            );
-//
-//            result = operation.execute(client);
-//            int status = result.getHttpCode();
-//            if (result.isSuccess())
-//                Log_OC.e(TAG, "Check Success!");
-//            else {
-//                Log_OC.e(TAG, "Error"+result.getLogMessage().toString());
-//            }
-//            if (operation.wasRedirected()) {
-//                RedirectionPath redirectionPath = operation.getRedirectionPath();
-//                String permanentLocation = redirectionPath.getLastPermanentLocation();
-//                result.setLastPermanentLocation(permanentLocation);
-//            }
+            ExistenceCheckRemoteOperation operation = new ExistenceCheckRemoteOperation(
+                    REMOTE_PATH,
+                    mContext,
+                    SUCCESS_IF_ABSENT
+            );
 
-            // Operation - get display name
-//            if (result.isSuccess()) {
+            result = operation.execute(client);
+            int status = result.getHttpCode();
+            if (result.isSuccess())
+                Log_OC.e(TAG, "Check Success!");
+            else {
+                Log_OC.e(TAG, "Error"+result.getLogMessage().toString());
+            }
+            if (operation.wasRedirected()) {
+                RedirectionPath redirectionPath = operation.getRedirectionPath();
+                String permanentLocation = redirectionPath.getLastPermanentLocation();
+                result.setLastPermanentLocation(permanentLocation);
+            }
+
+//             Operation - get display name
+            if (result.isSuccess()) {
                 Log_OC.d("AuthenticatorAsyncTask", "call GetRemoteUserInfoOperation");
                 GetRemoteUserInfoOperation remoteUserNameOperation = new GetRemoteUserInfoOperation();
                 result = remoteUserNameOperation.execute(client);
-//            }
+            }
 
         } else {
             result = new RemoteOperationResult(RemoteOperationResult.ResultCode.UNKNOWN_ERROR);

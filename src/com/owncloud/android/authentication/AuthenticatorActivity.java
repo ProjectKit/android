@@ -60,6 +60,7 @@ import android.view.inputmethod.EditorInfo;
 import android.webkit.HttpAuthHandler;
 import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -209,7 +210,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     private final String SAML_TOKEN_TYPE =
             AccountTypeUtils.getAuthTokenTypeSamlSessionCookie(MainApp.getAccountType());
 
-    private WebView webViewLogin, webvViewSignUp;
+    private WebView webViewLogin, webViewSignUp;
     private String pkAccessToken;
     private Toolbar myToolbar;
     private View accountWelcomeSetup;
@@ -320,25 +321,41 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                     setWebView();
             }
         });
-//
-//        mPkLoginButton = findViewById(R.id.btnPkLogin);
-//        mPkLoginButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                setWebView();
-//
-//            }
-//        });
 
         mButtonSignUp = findViewById(R.id.buttonSignUp);
         mButtonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = "https://id.projectkit.net/signup-mobile?locale=en-US";
-                //change this, shouldn't use setContentView
+                String url = "http://id.vietnamcic.org/vcic/signup";
+
+//                change this, shouldn't use setContentView
                 setContentView(R.layout.account_webview_signup);
-                webvViewSignUp = (WebView) findViewById(R.id.webViewSignUp);
-                webvViewSignUp.loadUrl(url);
+                webViewSignUp = (WebView) findViewById(R.id.webViewSignUp);
+//                accountWelcomeSetup.setVisibility(View.GONE);
+//                webViewSignUp.setVisibility(View.VISIBLE);
+//                if (getSupportActionBar() != null) {
+//                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+//                }
+                webViewSignUp.loadUrl(url);
+                webViewSignUp.setWebViewClient(new WebViewClient(){
+                    @Override
+                    public void onPageFinished(WebView view, String url) {
+                        Log_OC.e(TAG, "Sign Up: "+url);
+                        super.onPageFinished(view, url);
+
+                    }
+
+                    @Override
+                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                        if (url.equals("http://id.vietnamcic.org/vcic/signin")) {
+                            Log_OC.e(TAG, "Override url: "+url);
+                            setWebView();
+                            return true;
+                        }
+                        return false;
+                    }
+                });
             }
         });
         /// initialize block to be moved to single Fragment to check server and get info about it 
@@ -358,6 +375,13 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             locale = "vi-VN";
         else if (locale.equals("en_US"))
             locale = "en-US";
+        /*String url = "http://id.vietnamcic.org/vcic/oauth/signin?" +
+                "client_id=" + getString(R.string.oauth2_client_id)+
+                "&response_type=" + getString(R.string.oauth2_response_type)+
+                "&redirect_uri=" + getString(R.string.oauth2_redirect_uri) +
+                "&scope=" + getString(R.string.oauth2_scope) +
+                "&nonce=sdsqe&contextData=%7B%22fromApp%22:%22mobileApp%22%7D";*/
+//        https://id.projectkit.net/auth/signin?ui_locales=en-US&client_id=cid-pk-mobile&response_type=id_token+token&redirect_uri=pk://auth/callback&scope=openid+email+profile+rs-pk-main+rs-pk-so+rs-pk-issue+rs-pk-web&contextData={"fromApp":"mobileApp"}&nonce=g4sg6
         String url = "https://id.projectkit.net/auth/signin" +
                 "?ui_locales="+ locale +"&client_id=" + getString(R.string.oauth2_client_id) +
                 "&response_type=" + getString(R.string.oauth2_response_type) +
@@ -1752,6 +1776,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 //                    mAccount, Constants.KEY_OC_BASE_URL,   mServerInfo.mBaseUrl
 //            );
 
+//            mAccountMgr.setUserData(
+//                    mAccount, Constants.KEY_OC_BASE_URL,   "http://drive.vietnamcic.org"
+//            );
             mAccountMgr.setUserData(
                     mAccount, Constants.KEY_OC_BASE_URL,   "https://drive.projectkit.net"
             );
