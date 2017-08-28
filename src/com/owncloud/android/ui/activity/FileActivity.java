@@ -394,7 +394,7 @@ public class FileActivity extends DrawerActivity
 
             /// step 2 - request credentials to user
             Log_OC.e(TAG, "Disable Request credentials to user");
-            Toast.makeText(getApplicationContext(), "Request credentials to user", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.update_file_failed), Toast.LENGTH_LONG).show();
 //            Intent updateAccountCredentials = new Intent(this, AuthenticatorActivity.class);
 //            updateAccountCredentials.putExtra(AuthenticatorActivity.EXTRA_ACCOUNT, account);
 //            updateAccountCredentials.putExtra(

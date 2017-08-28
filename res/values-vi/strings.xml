@@ -401,4 +401,5 @@
   <string name="uploads_view_upload_status_waiting_for_wifi">Đang đợi kết nối wifi</string>
   <string name="wait_for_tmp_copy_from_private_storage">Sao chép tệp từ bộ nhớ riêng</string>
   <string name="with_you_subject_header"></string>
+    <string name="update_file_failed">Đã xảy ra lỗi khi đồng bộ hóa, vui lòng thử lại.</string>
 </resources>

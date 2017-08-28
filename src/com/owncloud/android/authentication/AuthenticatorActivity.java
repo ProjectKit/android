@@ -57,6 +57,7 @@ import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.webkit.CookieManager;
 import android.webkit.HttpAuthHandler;
 import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
@@ -190,7 +191,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     private EditText mUsernameInput;
     private EditText mPasswordInput;
     private View mOkButton;
-    private View mPkLoginButton, mButtonLogIn, mButtonSignUp;
     private TextView mAuthStatusView;
 
     private int mAuthStatusText = 0, mAuthStatusIcon = 0;
@@ -210,6 +210,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     private final String SAML_TOKEN_TYPE =
             AccountTypeUtils.getAuthTokenTypeSamlSessionCookie(MainApp.getAccountType());
 
+    private static final String KEY_PK_LOGIN= "LOGIN";
+    private static final String KEY_PK_SIGNUP= "SIGNUP";
+    private View mButtonLogIn, mButtonSignUp;
     private WebView webViewLogin, webViewSignUp;
     private String pkAccessToken;
     private Toolbar myToolbar;
@@ -282,6 +285,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         setSupportActionBar(myToolbar);
 
         accountWelcomeSetup = findViewById(R.id.account_welcome_setup);
+        webViewLogin = (WebView) findViewById(R.id.webViewLogin);
+        webViewSignUp = (WebView) findViewById(R.id.webViewSignUp);
+
         mOkButton = findViewById(R.id.buttonOK);
         mOkButton.setOnClickListener(new View.OnClickListener() {
 
@@ -311,6 +317,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         mButtonLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                setWebView(KEY_PK_LOGIN);
                 ConnectivityManager cm = (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
                 NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
@@ -318,7 +325,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 if (!isConnected)
                     Toast.makeText(getBaseContext(), "No internet", Toast.LENGTH_LONG).show();
                 else
-                    setWebView();
+                    setWebViewLogin();
             }
         });
 
@@ -326,36 +333,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         mButtonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = "http://id.vietnamcic.org/vcic/signup";
-
-//                change this, shouldn't use setContentView
-                setContentView(R.layout.account_webview_signup);
-                webViewSignUp = (WebView) findViewById(R.id.webViewSignUp);
-//                accountWelcomeSetup.setVisibility(View.GONE);
-//                webViewSignUp.setVisibility(View.VISIBLE);
-//                if (getSupportActionBar() != null) {
-//                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//                    getSupportActionBar().setDisplayShowHomeEnabled(true);
-//                }
-                webViewSignUp.loadUrl(url);
-                webViewSignUp.setWebViewClient(new WebViewClient(){
-                    @Override
-                    public void onPageFinished(WebView view, String url) {
-                        Log_OC.e(TAG, "Sign Up: "+url);
-                        super.onPageFinished(view, url);
-
-                    }
-
-                    @Override
-                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                        if (url.equals("http://id.vietnamcic.org/vcic/signin")) {
-                            Log_OC.e(TAG, "Override url: "+url);
-                            setWebView();
-                            return true;
-                        }
-                        return false;
-                    }
-                });
+                setWebViewSignup();
             }
         });
         /// initialize block to be moved to single Fragment to check server and get info about it 
@@ -367,35 +345,63 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
     }
 
+    private void setWebViewSignup() {
+        String url = "http://id.vietnamcic.org/signup";
 
-    private void setWebView() {
-        Log_OC.d(TAG, "Locale: " + Locale.getDefault().toString());
-        String locale = Locale.getDefault().toString();
-        if (locale.equals("vi_VN"))
-            locale = "vi-VN";
-        else if (locale.equals("en_US"))
-            locale = "en-US";
-        /*String url = "http://id.vietnamcic.org/vcic/oauth/signin?" +
+
+        accountWelcomeSetup.setVisibility(View.GONE);
+        webViewSignUp.setVisibility(View.VISIBLE);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+        webViewSignUp.loadUrl(url);
+
+        webViewSignUp.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                Log_OC.e(TAG, "Sign Up: "+url);
+                super.onPageFinished(view, url);
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if( URLUtil.isNetworkUrl(url) ) {
+                    if (url.equals("http://id.vietnamcic.org/signin")) {
+                        Log_OC.e(TAG, "Override url: "+url);
+                        webViewSignUp.setVisibility(View.GONE);
+                        setWebViewLogin();
+                        return true;
+                    }
+                    return false;
+                }
+
+                // Otherwise allow the OS to handle it
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity( intent );
+                return true;
+            }
+
+        });
+    }
+
+
+    private void setWebViewLogin() {
+        String url = "http://id.vietnamcic.org/oauth/signin/v2?" +
                 "client_id=" + getString(R.string.oauth2_client_id)+
                 "&response_type=" + getString(R.string.oauth2_response_type)+
                 "&redirect_uri=" + getString(R.string.oauth2_redirect_uri) +
                 "&scope=" + getString(R.string.oauth2_scope) +
-                "&nonce=sdsqe&contextData=%7B%22fromApp%22:%22mobileApp%22%7D";*/
-//        https://id.projectkit.net/auth/signin?ui_locales=en-US&client_id=cid-pk-mobile&response_type=id_token+token&redirect_uri=pk://auth/callback&scope=openid+email+profile+rs-pk-main+rs-pk-so+rs-pk-issue+rs-pk-web&contextData={"fromApp":"mobileApp"}&nonce=g4sg6
-        String url = "https://id.projectkit.net/auth/signin" +
-                "?ui_locales="+ locale +"&client_id=" + getString(R.string.oauth2_client_id) +
-                "&response_type=" + getString(R.string.oauth2_response_type) +
-                "&redirect_uri=" + getString(R.string.oauth2_redirect_uri) +
-                "&scope=" + getString(R.string.oauth2_scope) +
-                "&contextData={%22fromApp%22:%22mobileApp%22}&nonce=g4sg6";
+                "&nonce=sdsqe&contextData=%7B%22fromApp%22:%22mobileApp%22%7D";
 
-        webViewLogin = (WebView) findViewById(R.id.webViewLogin);
         accountWelcomeSetup.setVisibility(View.GONE);
         webViewLogin.setVisibility(View.VISIBLE);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
+        webViewLogin.clearView();
+
         webViewLogin.loadUrl(url);
 
         webViewLogin.setWebViewClient(new WebViewClient() {
@@ -434,7 +440,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     @Override
     public void onBackPressed() {
         accountWelcomeSetup.setVisibility(View.VISIBLE);
-        webViewLogin.setVisibility(View.GONE);
+        if (webViewLogin.getVisibility()==View.VISIBLE)
+            webViewLogin.setVisibility(View.GONE);
+        else
+            webViewSignUp.setVisibility(View.GONE);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
@@ -442,7 +451,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     @Override
     public boolean onSupportNavigateUp() {
         accountWelcomeSetup.setVisibility(View.VISIBLE);
-        webViewLogin.setVisibility(View.GONE);
+        if (webViewLogin.getVisibility()==View.VISIBLE)
+            webViewLogin.setVisibility(View.GONE);
+        else
+            webViewSignUp.setVisibility(View.GONE);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         return true;
@@ -1709,7 +1721,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
         String username = userInfo1.mEmail;
 
-//        String username = "";
         if (isOAuth) {
             username = "OAuth_user" + (new java.util.Random(System.currentTimeMillis())).nextLong();
         }
@@ -1772,15 +1783,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 //            mAccountMgr.setUserData(
 //                    mAccount, Constants.KEY_OC_VERSION, mServerInfo.mVersion.getVersion()
 //            );
-//            mAccountMgr.setUserData(
-//                    mAccount, Constants.KEY_OC_BASE_URL,   mServerInfo.mBaseUrl
-//            );
-
-//            mAccountMgr.setUserData(
-//                    mAccount, Constants.KEY_OC_BASE_URL,   "http://drive.vietnamcic.org"
-//            );
             mAccountMgr.setUserData(
-                    mAccount, Constants.KEY_OC_BASE_URL,   "https://drive.projectkit.net"
+                    mAccount, Constants.KEY_OC_BASE_URL,   mServerInfo.mBaseUrl
             );
             if (authResult.getData() != null) {
                 try {

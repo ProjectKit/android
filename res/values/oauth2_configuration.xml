@@ -1,18 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- constants that must be respected by the authorization server; if changed, the app must be rebuild -->
+     <!--constants that must be respected by the authorization server; if changed, the app must be rebuild-->
+    <!--<string name="oauth2_redirect_scheme">pk</string>-->
+    <!--<string name="oauth2_redirect_uri">pk://auth/callback</string>-->
+
+    <!--&lt;!&ndash; values that should be provided by ownCloud server &ndash;&gt;-->
+    <!--<string name="oauth2_url_endpoint_auth"></string>-->
+    <!--<string name="oauth2_url_endpoint_access"></string>-->
+    <!--<string name="oauth2_scope">openid+email+profile+rs-pk-main+rs-pk-so+rs-pk-issue+rs-pk-web</string>-->
+    <!--<string name="oauth2_grant_type">authorization_code</string>	&lt;!&ndash; the only one supported right now &ndash;&gt;-->
+    <!--<string name="oauth2_response_type">id_token+token</string>				&lt;!&ndash; depends on oauth2_grant_type &ndash;&gt;-->
+
+    <!--&lt;!&ndash; values that should be pre-agreed between app and authorization server, but can be loaded without rebuilding the app &ndash;&gt;-->
+    <!--<string name="oauth2_client_id">cid-pk-mobile</string>	&lt;!&ndash; preferable that client decides this &ndash;&gt;-->
+    <!--<string name="oauth2_client_secret"></string>					&lt;!&ndash; preferable that client decides this &ndash;&gt;-->
+
+    <!--vcic-->
+     <!--constants that must be respected by the authorization server; if changed, the app must be rebuild -->
     <string name="oauth2_redirect_scheme">pk</string>
     <string name="oauth2_redirect_uri">pk://auth/callback</string>
-    
+
     <!-- values that should be provided by ownCloud server -->
     <string name="oauth2_url_endpoint_auth"></string>
     <string name="oauth2_url_endpoint_access"></string>
-    <string name="oauth2_scope">openid+email+profile+rs-pk-main+rs-pk-so+rs-pk-issue+rs-pk-web</string>
+    <string name="oauth2_scope">openid+email+name+profile</string>
     <string name="oauth2_grant_type">authorization_code</string>	<!-- the only one supported right now -->
     <string name="oauth2_response_type">id_token+token</string>				<!-- depends on oauth2_grant_type -->
-    
+
     <!-- values that should be pre-agreed between app and authorization server, but can be loaded without rebuilding the app -->
-    <string name="oauth2_client_id">cid-pk-mobile</string>	<!-- preferable that client decides this -->
+    <string name="oauth2_client_id">cid-drive-mobile</string>
     <string name="oauth2_client_secret"></string>					<!-- preferable that client decides this -->
-    
 </resources>

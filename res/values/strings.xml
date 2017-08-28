@@ -464,6 +464,7 @@
     <string name="home_log_in">Log In</string>
     <string name="welcome_to_projectkit">Welcome to VCIC Drive</string>
     <string name="welcome_description">Join millions of people who are using VCIC to achieve amazing things</string>
+    <string name="update_file_failed">There was an error synchronizing, please try again.</string>
     <plurals name="items_selected_count">
         <item quantity="one">%d selected</item>
         <item quantity="other">%d selected</item>
